@@ -249,7 +249,7 @@
     text-align: center;
   ">
     <div style="font-size: 1.15em; color:#ffb3ff; margin-bottom: 10px;">
-      thông minh đấy 😏 chuẩn bị nhận quà chưa
+      Thông minh đấy 😏<br> Trong 5s phải click vào con heo để nhận quà
     </div>
 
     <div style="
@@ -286,7 +286,7 @@
     <div style="display:flex; justify-content: space-between; align-items:flex-start;">
       <div style="font-size: 1.05em; color:#ffb3ff; text-align:left; line-height:1.4;">
         hehe lần đầu làm web nên k bt design xịn xò<br>
-        có gì muốn chia sẻ không
+        cho xin tí chia sẻ nho
       </div>
       <button id="feedback1-close" aria-label="Close" style="
         background: transparent; border: none; color:#ff66a3;
@@ -308,6 +308,18 @@
 
     <div style="margin-top: 10px; color:#fff; opacity:0.8; font-size:0.95em;">
       (Enter để gửi • Shift+Enter để xuống dòng)
+    </div>
+    <div style="margin-top: 14px;">
+      <button id="feedback1-ok" style="
+        font-size: 1.05em;
+        padding: 10px 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background-color: #ff66cc;
+        color: white;
+        box-shadow: 0 0 15px #ff99ff;
+      ">Gửi cho pt</button>
     </div>
   </div>
 </div>
@@ -397,6 +409,8 @@
   const okBtn = document.getElementById("ok");
   const menu = document.getElementById("menu");
   const messageBox = document.getElementById("message-box");
+  const fb1Ok = document.getElementById("feedback1-ok");
+
   
   // =======================
   // AUDIO SETUP
@@ -407,11 +421,14 @@
 
   //  loop thì bật
   track1.loop = true;
-  track2.loop = true;
+  track2.loop = false;
   trackNo.loop = false;
   trackNo.playsInline = true;
 
   trackNo.addEventListener("ended", () => {
+    play1();
+  });
+  track2.addEventListener("ended", () => {
     play1();
   });
 
@@ -420,11 +437,11 @@
   track2.playsInline = true;
 
   function stopAll() {
-    [track1, track2].forEach(a => {
-      a.pause();
-      a.currentTime = 0;
-    });
-  }
+  [track1, track2, trackNo].forEach(a => {
+    a.pause();
+    a.currentTime = 0;
+  });
+}
 
   async function playTrack(audio) {
     try {
@@ -516,10 +533,15 @@ fb1Input.addEventListener("keydown", (e) => {
   }
 });
 
+fb1Ok.addEventListener("click", () => {
+  hideFeedback1();
+  showFeedback2();
+});
+
 fb2Ok.addEventListener("click", () => {
   hideFeedback2();
   showFeedback3();
-});
+}); 
 
 fb3Close.addEventListener("click", () => {
   hideFeedback3();
@@ -528,7 +550,6 @@ fb3Close.addEventListener("click", () => {
 
   // Khi bấm "Có" → Hiện bức thư
   function openLetter() {
-    play2();
     const letterBox = document.createElement("div");
     letterBox.innerHTML = `
       <div id="letter-container">
@@ -783,7 +804,8 @@ function submitDate() {
   const vText = normaliseText(raw);
 
   if (correctAnswers.includes(vDate) || correctAnswers.includes(vText)) {
-    showCongratsThenOpenLetter();   // ✅ đổi chỗ này
+    play2();  
+    showCongratsThenOpenLetter();   
   } else {
     dateError.style.display = "block";
     dateInput.focus();
