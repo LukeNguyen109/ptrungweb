@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday un</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <style>
+    #back-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 102, 255, 0.8);
+      border: none;
+      border-radius: 30px;
+      padding: 10px 20px;
+      font-size: 1em;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ff99ff;
+      transition: all 0.3s ease;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    #back-btn:hover {
+      background: rgba(255, 51, 153, 1);
+      transform: scale(1.1);
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1b0034, #000);
+      font-family: 'Quicksand', cursive;
+      height: 100vh;
+      text-align: center;
+      color: white;
+    }
+    /* Hiệu ứng chữ phát sáng */
+    .text-box {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translateY(-50%); /* căn giữa hoàn hảo */
+    }
+
+    h1 {
+      font-size: 4em;
+      margin-bottom: 20px; /* cách h1 và dòng dưới */
+      text-shadow: 0 0 20px #ff66ff, 0 0 40px #ff99ff;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    h2 {
+      font-size: 2em;
+      margin: 0;
+      line-height: 1.6;
+      color: #fff4ff;
+      /* text-shadow: 0 0 10px #ff99ff; */
+      animation: glow_blue 3s ease-in-out infinite alternate;
+    }
+    
+    /* thu vien hieu ung */
+    @keyframes fadein {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff33ff; }
+      to { text-shadow: 0 0 30px #ff33cc, 0 0 60px #ff66ff; }
+    }
+        @keyframes glow_blue {
+      from { text-shadow: 0 0 10px #33adff; }
+      to { text-shadow: 0 0 30px #33adff, 0 0 60px #66b3ff; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes slidein {
+      from { transform: translateX(-100vw); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    @keyframes rainbow {
+      0% { color: red; }
+      20% { color: orange; }
+      40% { color: yellow; }
+      60% { color: green; }
+      80% { color: blue; }
+      100% { color: violet; }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.5; text-shadow: 0 0 5px white; }
+      50% { opacity: 1; text-shadow: 0 0 15px yellow; }
+    }
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    /* Bóng bay */
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 60px;
+      height: 80px;
+      border-radius: 50%;
+      animation: float 8s infinite ease-in;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0) rotate(0deg); opacity: 1; }
+      to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="text-box">
+    <h1>🎂 Happy Birthday un 🎉</h1>
+    <h2>Thật sự thì không biết nói gì</h2>
+    <h2>Nên sẽ không nói gì</h2>
+    <h2>Nên sẽ không nói gì</h2>
+    <h2>Nên sẽ không nói gì</h2>
+    <h2>Nên sẽ không nói gì</h2>
+  </div>
+  <button id="back-btn">← Menu</button>
+
+
+  <canvas id="fireworks"></canvas>
+
+  <audio autoplay loop>
+    <source src="happy_birthday.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // ============================
+    // Hiệu ứng bóng bay
+    // ============================
+    
+    for (let i = 0; i < 15; i++) {
+      const b = document.createElement("div");
+      b.className = "balloon";
+      b.style.left = Math.random() * 100 + "vw";
+      b.style.animationDuration = (6 + Math.random() * 4) + "s";
+      b.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
+      document.body.appendChild(b);
+    }
+
+    // ============================
+    // Hiệu ứng confetti
+    // ============================
+    const confettiCanvas = document.createElement('canvas');
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+    confettiCanvas.style.position = 'fixed';
+    confettiCanvas.style.top = 0;
+    confettiCanvas.style.left = 0;
+    confettiCanvas.style.pointerEvents = 'none';
+    document.body.appendChild(confettiCanvas);
+    const ctxConfetti = confettiCanvas.getContext('2d');
+
+    const confettis = Array.from({ length: 200 }).map(() => ({
+      x: Math.random() * confettiCanvas.width,
+      y: Math.random() * confettiCanvas.height,
+      r: Math.random() * 6 + 4,
+      c: `hsl(${Math.random() * 360}, 100%, 70%)`,
+      s: Math.random() * 3 + 1
+    }));
+
+    function drawConfetti() {
+      ctxConfetti.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettis.forEach(p => {
+        ctxConfetti.beginPath();
+        ctxConfetti.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+        ctxConfetti.fillStyle = p.c;
+        ctxConfetti.fill();
+        p.y += p.s;
+        if (p.y > confettiCanvas.height) p.y = -10;
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+    drawConfetti();
+
+    // ============================
+    // Hiệu ứng pháo hoa
+    // ============================
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Firework {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = Math.random() * 3 + 2;
+        this.angle = Math.random() * 2 * Math.PI;
+        this.speed = Math.random() * 6 + 2;
+        this.life = 100;
+      }
+      update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.speed *= 0.95;
+        this.life--;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+
+    const fireworks = [];
+    function createFirework() {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height / 2;
+      const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+      for (let i = 0; i < 50; i++) {
+        fireworks.push(new Firework(x, y, color));
+      }
+    }
+
+    function animateFireworks() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      fireworks.forEach((f, i) => {
+        f.update();
+        f.draw();
+        if (f.life <= 0) fireworks.splice(i, 1);
+      });
+      if (Math.random() < 0.04) createFirework();
+      requestAnimationFrame(animateFireworks);
+    }
+    animateFireworks();
+
+    // Resize canvas khi thay đổi kích thước cửa sổ
+    window.addEventListener('resize', () => {
+      canvas.width = confettiCanvas.width = window.innerWidth;
+      canvas.height = confettiCanvas.height = window.innerHeight;
+    });
+
+    // ============================
+    // Nút quay lại menu
+    // ============================
+    document.getElementById("back-btn").addEventListener("click", () => {
+      window.location.href = "/"; // Flask route về menu chính
+    });
+  </script>
+</body>
+</html>

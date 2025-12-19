@@ -1,0 +1,862 @@
+<!--Author: Phu Trung Nguyen
+    Date: OCT 2025
+    Description: tạo quà sn ủn ngu
+-->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Main menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      /* background: radial-gradient(circle at center, #1b0034, #000); */
+        background-image: url("static/CreasedPaper.jpg"); /* Đường dẫn đến ảnh nền */
+        background-size: cover;       /* Ảnh phủ toàn màn hình */
+        background-position: center;  /* Căn giữa ảnh */
+        background-repeat: no-repeat; /* Không lặp lại */
+        font-family: 'Quicksand', sans-serif;
+        color: white;
+        text-align: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    h1 {
+      font-size: 4em;
+      text-shadow: 0 0 15px #ff66ff;
+      margin-bottom: 30px;
+    }
+
+    button {
+      font-size: 1.5em;
+      padding: 10px 25px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #ff66cc;
+      color: white;
+      box-shadow: 0 0 15px #ff99ff;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ff3399;
+      transform: scale(1.1);
+    }
+
+    #message-box {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #ff66ff;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #message-box p {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      color: #ffb3ff;
+    }
+
+    #angry-pig {
+      width: 180px;
+      height: auto;
+      margin-bottom: 20px;
+      animation: shake 0.8s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(5deg); }
+      50% { transform: rotate(0deg); }
+      75% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    /* 🐷 Heo chạy ngang */
+    .running-pig {
+      position: fixed;
+      left: -200px;
+      width: 120px;
+      height: auto;
+      z-index: 10;
+      animation: runAcross 6s linear forwards;
+      pointer-events: none; /* không cản trở bấm nút */
+    }
+
+    @keyframes runAcross {
+      0% { left: -200px; transform: scaleX(1); }
+      50% { transform: scaleX(1); }
+      100% { left: 110vw; transform: scaleX(1); }
+    }
+    #corner-pig {
+      position: absolute;
+      top: 10px;
+      right: 85px;
+      width: 100px;
+      height: auto;
+      z-index: 2000;
+      animation: pigFadeIn 1s ease-out;
+    }
+
+    @keyframes pigFadeIn {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* 🐷 Heo bay tung ra từ bức thư */
+    .flying-pig {
+      position: fixed;
+      width: 120px;
+      height: auto;
+      z-index: 1500;
+      transform: translate(-50%, -50%) scale(0.8);
+      animation: pigExplosion 3s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes pigExplosion {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(
+          calc(-50% + (randX * 1px)),
+          calc(-50% + (randY * 1px))
+        ) scale(0.6);
+      }
+    }
+
+
+
+  </style>
+</head>
+<body>
+  <!-- Music permission popup -->
+<div id="music-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 5000;
+">
+  <div style="
+    width: min(420px, 90vw);
+    background: rgba(0,0,0,0.75);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 14px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+  ">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+      <div style="font-size: 1.1em; color:#ffb3ff;">mở tiếng nhe🫰🏻 </div>
+      <button id="music-close" aria-label="Close" style="
+        background: transparent; border: none; color:#ff66a3;
+        font-size: 1.2em; cursor: pointer;
+      ">✖</button>
+    </div>
+
+    <p style="margin: 12px 0 16px; color:#fff; opacity:0.9;">
+      để khỏi chặn autoplay á, chỉnh volume coi chừng điếc
+    </p>
+
+    <button id="music-yes" style="
+      font-size: 1.1em;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #ff66cc;
+      color: white;
+      box-shadow: 0 0 15px #ff99ff;
+    ">kê</button>
+  </div>
+</div>
+<!-- Date quiz popup -->
+<div id="date-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 5500;
+">
+  <div style="
+    width: min(420px, 90vw);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 14px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+  ">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+      <div style="font-size: 1.1em; color:#ffb3ff;">thế ngày gì nói coi 😼</div>
+      <button id="date-close" aria-label="Close" style="
+        background: transparent; border: none; color:#ff66a3;
+        font-size: 1.2em; cursor: pointer;
+      ">✖</button>
+    </div>
+
+    <p style="margin: 12px 0 10px; color:#fff; opacity:0.9;">
+      hãy nhập đúng để được nhận quà 🎁
+    </p>
+
+    <input id="date-input" inputmode="numeric" placeholder="nhập dô đây nè cu" style="
+      width: 70%;
+      font-size: 1.1em;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.25);
+      outline: none;
+      text-align: center;
+    " />
+
+    <div id="date-error" style="margin-top:10px; color:#ff8fb3; display:none;">
+      sai rồi 😒 nhập lại đi
+    </div>
+
+    <div style="margin-top: 14px;">
+      <button id="date-submit">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Congrats popup -->
+<div id="congrats-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 5600;
+">
+  <div style="
+    width: min(420px, 90vw);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+  ">
+    <div style="font-size: 1.15em; color:#ffb3ff; margin-bottom: 10px;">
+      thông minh đấy 😏 chuẩn bị nhận quà chưa
+    </div>
+
+    <div style="
+      font-size: 3.2em;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 18px #ff66ff;
+      margin: 10px 0 4px;
+    " id="countdown">5</div>
+
+    <div style="color:#fff; opacity:0.85; margin-top: 6px;">
+      đếm ngược xíu nha...
+    </div>
+  </div>
+</div>
+<!-- 💬 Feedback popup 1 -->
+<div id="feedback1-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 5700;
+">
+  <div style="
+    width: min(520px, 92vw);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+  ">
+    <div style="display:flex; justify-content: space-between; align-items:flex-start;">
+      <div style="font-size: 1.05em; color:#ffb3ff; text-align:left; line-height:1.4;">
+        hehe lần đầu làm web nên k bt design xịn xò<br>
+        có gì muốn chia sẻ không
+      </div>
+      <button id="feedback1-close" aria-label="Close" style="
+        background: transparent; border: none; color:#ff66a3;
+        font-size: 1.2em; cursor: pointer;
+      ">✖</button>
+    </div>
+
+    <textarea id="feedback1-input" rows="4" placeholder="gõ gì đó rồi nhấn Enter..."
+      style="
+        width: 92%;
+        margin-top: 12px;
+        font-size: 1.05em;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.25);
+        outline: none;
+        resize: none;
+      "></textarea>
+
+    <div style="margin-top: 10px; color:#fff; opacity:0.8; font-size:0.95em;">
+      (Enter để gửi • Shift+Enter để xuống dòng)
+    </div>
+  </div>
+</div>
+
+<!-- 😭 No-server popup 2 -->
+<div id="feedback2-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 5800;
+">
+  <div style="
+    width: min(520px, 92vw);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+  ">
+    <div style="font-size: 1.05em; color:#ffb3ff; line-height:1.5; margin-bottom: 12px;">
+      dỡn thôi chứ t đ có server để coi lại đâu kkk,<br>
+      muốn nói gì thì ig: <b>phutrungdeptraidangcapvcl</b>
+    </div>
+
+    <button id="feedback2-ok" style="
+      font-size: 1.05em;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #ff66cc;
+      color: white;
+      box-shadow: 0 0 15px #ff99ff;
+    ">OK</button>
+  </div>
+</div>
+
+<!-- 👀 Tab title popup 3 -->
+<div id="feedback3-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 5900;
+">
+  <div style="
+    width: min(520px, 92vw);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+  ">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+      <div style="font-size: 1.05em; color:#ffb3ff;">
+        btw nếu m k để ý thì nhìn tên tab đi
+      </div>
+      <button id="feedback3-close" aria-label="Close" style="
+        background: transparent; border: none; color:#ff66a3;
+        font-size: 1.2em; cursor: pointer;
+      ">✖</button>
+    </div>
+  </div>
+</div>
+
+
+  <h1>ê ủn biết nay ngày gì kh cu?</h1>
+  <div id="menu">
+    <button id="yes">Có 😎</button>
+    <button id="no">Không 😒</button>
+  </div>
+
+  <div id="message-box">
+    <img id="angry-pig" src="static/angryPig.gif" alt="Angry Pig">
+    <p>m tệ vcl 😤 chọn "Có" đi đồ ngu 😡</p>
+    <button id="ok">OK 🙄</button>
+  </div>
+
+<script>
+  const yesBtn = document.getElementById("yes");
+  const noBtn = document.getElementById("no");
+  const okBtn = document.getElementById("ok");
+  const menu = document.getElementById("menu");
+  const messageBox = document.getElementById("message-box");
+  
+  // =======================
+  // AUDIO SETUP
+  // =======================
+  const track1 = new Audio("static/1.mp3");
+  const track2 = new Audio("static/2.mp3");
+  const trackNo = new Audio("static/saomayngutheha.mp3");
+
+  //  loop thì bật
+  track1.loop = true;
+  track2.loop = true;
+  trackNo.loop = false;
+  trackNo.playsInline = true;
+
+  trackNo.addEventListener("ended", () => {
+    play1();
+  });
+
+  // iOS hay cần play inline
+  track1.playsInline = true;
+  track2.playsInline = true;
+
+  function stopAll() {
+    [track1, track2].forEach(a => {
+      a.pause();
+      a.currentTime = 0;
+    });
+  }
+
+  async function playTrack(audio) {
+    try {
+      await audio.play();
+    } catch (e) {
+      // nếu vẫn bị chặn (hiếm), ít nhất không crash
+      console.warn("Audio play blocked:", e);
+    }
+  }
+
+  function play1() { stopAll(); playTrack(track1); }
+  function play2() { stopAll(); playTrack(track2); }
+
+  // =======================
+  // 🎵 MUSIC POPUP (anti-autoplay-block)
+  // =======================
+  const musicPopup = document.getElementById("music-popup");
+  const musicYes = document.getElementById("music-yes");
+  const musicClose = document.getElementById("music-close");
+
+  // Mở trang -> hiện popup (mặc định đã hiện bằng style)
+  // Bấm "Có" trong popup -> phát 1.mp3
+  musicYes.addEventListener("click", () => {
+    musicPopup.style.display = "none";
+    play1();
+  });
+
+  // Bấm ✖ popup -> tắt nhạc (hoặc bạn muốn vẫn phát thì tuỳ)
+  musicClose.addEventListener("click", () => {
+    musicPopup.style.display = "none";
+    stopAll();
+  });
+
+  // =======================
+// 💬 FEEDBACK POPUPS FLOW
+// =======================
+const fb1Popup = document.getElementById("feedback1-popup");
+const fb1Input = document.getElementById("feedback1-input");
+const fb1Close = document.getElementById("feedback1-close");
+
+const fb2Popup = document.getElementById("feedback2-popup");
+const fb2Ok = document.getElementById("feedback2-ok");
+
+const fb3Popup = document.getElementById("feedback3-popup");
+const fb3Close = document.getElementById("feedback3-close");
+
+function showFeedback1() {
+  fb1Popup.style.display = "flex";
+  fb1Input.value = "";
+  setTimeout(() => fb1Input.focus(), 0);
+}
+
+function hideFeedback1() {
+  fb1Popup.style.display = "none";
+}
+
+function showFeedback2() {
+  fb2Popup.style.display = "flex";
+}
+
+function hideFeedback2() {
+  fb2Popup.style.display = "none";
+}
+
+function showFeedback3() {
+  fb3Popup.style.display = "flex";
+  document.title = "ptrung dcap vcl ủn thì nerd";
+}
+
+function hideFeedback3() {
+  fb3Popup.style.display = "none";
+  // ✅ quay về menu chính
+  menu.style.display = "block";
+  messageBox.style.display = "none";
+}
+
+// Close popup 1 -> bỏ qua luôn và quay về menu
+fb1Close.addEventListener("click", () => {
+  hideFeedback1();
+  menu.style.display = "block";
+});
+
+// Enter để gửi (Shift+Enter để xuống dòng)
+fb1Input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    hideFeedback1();
+    showFeedback2();
+  }
+});
+
+fb2Ok.addEventListener("click", () => {
+  hideFeedback2();
+  showFeedback3();
+});
+
+fb3Close.addEventListener("click", () => {
+  hideFeedback3();
+});
+
+
+  // Khi bấm "Có" → Hiện bức thư
+  function openLetter() {
+    play2();
+    const letterBox = document.createElement("div");
+    letterBox.innerHTML = `
+      <div id="letter-container">
+        <div id="letter">
+          <button id="close-letter">✖</button>
+          <div class="scrollable">
+            <h3>Happy birthday ủn nho 🎂</h3>
+            <p>Hôm nay là một ngày thật đặc biệt — ngày mà thế giới trở nên tươi sáng hơn một chút, vì có bạn trong đó.</p>
+            <p>Chúc bạn có một sinh nhật tràn đầy niềm vui, tiếng cười và hạnh phúc. Cảm ơn bạn vì đã luôn là chính mình — ấm áp, đáng yêu và chân thành.</p>
+            <p>Mong rằng mỗi ngày trôi qua đều mang đến cho bạn những điều tuyệt vời, những kỷ niệm đáng nhớ và nụ cười thật tươi.</p>
+            <p>Thêm một tuổi mới thật rực rỡ nhé! 💗              keke</p>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(letterBox);
+
+        // 🩷 Heo nổ tung liên tục từ mép bức thư
+        function spawnHeartPigs() {
+          const pigs = ["static/cute-pig.webp", "static/love-squeeze.webp"];
+          const letter = document.getElementById("letter");
+
+          if (!letter) return;
+
+          for (let i = 0; i < 3; i++) {  // số lượng mỗi đợt burst
+            const pig = document.createElement("img");
+            pig.src = pigs[Math.floor(Math.random() * pigs.length)];
+            pig.className = "flying-pig";
+
+            // Lấy kích thước & vị trí của bức thư
+            const rect = letter.getBoundingClientRect();
+            const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+            let startX, startY;
+
+            if (side === 0) { // trên
+              startX = rect.left + Math.random() * rect.width;
+              startY = rect.top;
+            } else if (side === 1) { // phải
+              startX = rect.right;
+              startY = rect.top + Math.random() * rect.height;
+            } else if (side === 2) { // dưới
+              startX = rect.left + Math.random() * rect.width;
+              startY = rect.bottom;
+            } else { // trái
+              startX = rect.left;
+              startY = rect.top + Math.random() * rect.height;
+            }
+
+            pig.style.left = `${startX}px`;
+            pig.style.top = `${startY}px`;
+            document.body.appendChild(pig);
+
+            // Hướng bay ngẫu nhiên
+            const angle = Math.random() * 2 * Math.PI;
+            const distance = 200 + Math.random() * 150;
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+
+            pig.animate(
+              [
+                { opacity: 1, transform: "translate(0, 0) scale(1)" },
+                { opacity: 0, transform: `translate(${x}px, ${y}px) scale(0.6)` }
+              ],
+              { duration: 2500, easing: "ease-out", fill: "forwards" }
+            );
+
+            setTimeout(() => pig.remove(), 2500);
+          }
+        }
+        const burstInterval = setInterval(spawnHeartPigs, 800); // cứ 0.8s nổ 1 đợt
+
+    // 🐷 Hiện heo ở góc phải khi mở thư
+    const cornerPig = document.createElement("img");
+    cornerPig.src = "static/unlaclu.webp"; // hoặc chỉnh đường dẫn nếu khác
+    cornerPig.id = "corner-pig";
+    letterBox.querySelector("#letter").appendChild(cornerPig);
+
+
+    // CSS popup
+    if (!document.getElementById("letter-style")) {
+      const style = document.createElement("style");
+      style.textContent = `
+        #letter-container {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100vw; height: 100vh;
+          background: rgba(0,0,0,0.4);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 999;
+        }
+
+        #letter {
+          width: 500px;
+          max-height: 75vh;
+          background: #fff;
+          border-radius: 20px;
+          box-shadow: 0 0 25px rgba(255,180,200,0.5);
+          padding: 120px 50px 40px 60px; /* top right bottom left */
+          text-align: left;
+          font-family: 'Quicksand', sans-serif;
+          position: relative;
+          background-image: url('static/cutePigFrame.jpg');
+          background-size: 100% 100%;
+          background-position: center;
+          background-repeat: no-repeat;
+          animation: fadeIn 0.6s ease-out;
+        }
+
+        #letter h2 {
+          text-align: center;
+          color: #ff6699;
+          font-family: 'Dancing Script', cursive;
+          margin-bottom: 5px;
+        }
+
+        #letter h3 {
+          text-align: center;
+          color: #ff4da6;
+          margin-bottom: 15px;
+          font-size: 1.2em;
+        }
+
+        .scrollable {
+          overflow-y: auto;
+          max-height: 48vh;
+          padding-right: 10px;
+          margin-top: 10px;
+        }
+
+        #letter p {
+          color: #333;
+          font-size: 1.05em;
+          line-height: 1.6;
+          margin-bottom: 15px;
+          text-align: left;     /* căn trái nội dung */
+          margin-left: 15px;    /* đẩy nhẹ chữ vào trong để không sát khung */
+          margin-right: 15px;   /* giữ khoảng đều hai bên */
+        }
+
+        #close-letter {
+          position: absolute;
+          top: 12px; right: 18px;
+          background: transparent;
+          border: none;
+          font-size: 1.2em;
+          cursor: pointer;
+          color: #ff66a3;
+          transition: 0.3s;
+        }
+
+        #close-letter:hover {
+          transform: scale(1.2);
+          color: #ff3399;
+        }
+
+        @keyframes fadeIn {
+          from {opacity: 0; transform: scale(0.8);}
+          to {opacity: 1; transform: scale(1);}
+        }
+
+        /* Thanh cuộn mềm mại */
+        .scrollable::-webkit-scrollbar {
+          width: 6px;
+        }
+        .scrollable::-webkit-scrollbar-thumb {
+          background: #ffcce0;
+          border-radius: 10px;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Nút đóng popup
+    document.getElementById("close-letter").addEventListener("click", () => {
+      clearInterval(burstInterval);
+      letterBox.remove();
+      const cornerPig = document.getElementById("corner-pig");
+      if (cornerPig) cornerPig.remove();
+      play1();
+      showFeedback1();
+    });
+}
+const datePopup = document.getElementById("date-popup");
+const dateInput = document.getElementById("date-input");
+const dateSubmit = document.getElementById("date-submit");
+const dateClose = document.getElementById("date-close");
+const dateError = document.getElementById("date-error");
+const congratsPopup = document.getElementById("congrats-popup");
+const countdownEl = document.getElementById("countdown");
+let countdownTimer = null;
+
+function showCongratsThenOpenLetter() {
+  // đóng popup nhập
+  datePopup.style.display = "none";
+
+  // hiện popup chúc mừng
+  congratsPopup.style.display = "flex";
+
+  // reset countdown
+  let n = 5;
+  countdownEl.textContent = String(n);
+
+  // clear timer cũ nếu có
+  if (countdownTimer) clearInterval(countdownTimer);
+
+  countdownTimer = setInterval(() => {
+    n -= 1;
+    countdownEl.textContent = String(n);
+
+    if (n <= 0) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+      congratsPopup.style.display = "none";
+      openLetter(); // ✅ sau 5 giây mới mở thư
+    }
+  }, 1000);
+}
+
+function normaliseDate(s) {
+  s = (s || "").trim().replace(/[-.]/g, "/");
+  if (/^\d{4}$/.test(s)) s = s.slice(0,2) + "/" + s.slice(2);
+
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})$/);
+  if (!m) return s;
+
+  const dd = String(parseInt(m[1], 10)).padStart(2, "0");
+  const mm = String(parseInt(m[2], 10)).padStart(2, "0");
+  return `${dd}/${mm}`;
+}
+function normaliseText(s) {
+  return (s || "")
+    .toLowerCase()
+    .normalize("NFD")                 // tách dấu
+    .replace(/[\u0300-\u036f]/g, "")  // xoá dấu
+    .trim();
+}
+
+function submitDate() {
+  const correctAnswers = [
+    "14/01",
+    "sn bo",
+    "sn tao",
+    "sn un",
+    "sinh nhat un",
+    "sinh nhat bo"
+  ];
+
+  const raw = dateInput.value;
+  const vDate = normaliseDate(raw);
+  const vText = normaliseText(raw);
+
+  if (correctAnswers.includes(vDate) || correctAnswers.includes(vText)) {
+    showCongratsThenOpenLetter();   // ✅ đổi chỗ này
+  } else {
+    dateError.style.display = "block";
+    dateInput.focus();
+    dateInput.select();
+  }
+}
+
+
+dateSubmit.addEventListener("click", submitDate);
+dateInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") submitDate();
+});
+dateClose.addEventListener("click", () => {
+  datePopup.style.display = "none";
+});
+datePopup.addEventListener("click", (e) => {
+  if (e.target === datePopup) datePopup.style.display = "none";
+});
+
+yesBtn.addEventListener("click", () => {
+  // mở popup hỏi ngày
+  document.getElementById("date-popup").style.display = "flex";
+  document.getElementById("date-error").style.display = "none";
+  const inp = document.getElementById("date-input");
+  inp.value = "";
+  inp.focus();
+});
+  // Nút "Không" và "OK" giữ nguyên
+  noBtn.addEventListener("click", () => {
+    stopAll();
+    playTrack(trackNo);
+    menu.style.display = "none";
+    messageBox.style.display = "flex";
+  });
+  okBtn.addEventListener("click", () => {
+    messageBox.style.display = "none";
+    menu.style.display = "block";
+    // play1();
+  });
+</script>
+<script>
+  // 🐷 Hàm tạo con heo chạy ngang
+  function spawnRunningPig(forceAtTitle = false) {
+    const pig = document.createElement("img");
+    pig.src = "static/runningPig.gif";
+    pig.className = "running-pig";
+
+    // nếu là lần đầu tiên → đặt đúng vị trí dòng tiêu đề
+    if (forceAtTitle) {
+      const title = document.querySelector("h1");
+      const titleRect = title.getBoundingClientRect();
+      const topPosition = titleRect.top + titleRect.height / 2; // giữa dòng chữ
+      pig.style.top = topPosition + "px";
+    } else {
+      // các lần sau thì random
+      const randomTop = Math.random() * 70 + 10; // từ 10% đến 80% màn hình
+      pig.style.top = randomTop + "%";
+    }
+
+    document.body.appendChild(pig);
+
+    // tự xóa sau khi chạy qua
+    setTimeout(() => pig.remove(), 6000);
+  }
+
+  // Khi tải trang xong thì chạy 1 lần ngang qua dòng chữ,
+  // sau đó cứ mỗi 4 giây lại chạy ngẫu nhiên
+  window.addEventListener("load", () => {
+    spawnRunningPig(true); // chạy đầu tiên ngang qua dòng chữ
+    setInterval(spawnRunningPig, 6000); // sau đó mỗi 6 giây
+  });
+</script>
+
+
+</body>
+</html>
