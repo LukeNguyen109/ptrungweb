@@ -9,7 +9,11 @@
   <title>Main menu</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
   <style>
+    :root{
+      --sticker-gap: 140px; /* chỉnh số này để né sticker */
+    }
     body {
+      
       /* background: radial-gradient(circle at center, #1b0034, #000); */
         background-image: url("static/CreasedPaper.jpg"); /* Đường dẫn đến ảnh nền */
         background-size: cover;       /* Ảnh phủ toàn màn hình */
@@ -137,7 +141,94 @@
       }
     }
 
+    /* Sticker ở góc dưới-trái của panel feedback1 */
+    #feedback1-popup .feedback1-sticker {
+      position: absolute;
+      left: -5px;      /* đẩy ra ngoài chút cho cute */
+      bottom: -5px;
+      width: 150px;     /* chỉnh size tuỳ ảnh */
+      height: auto;
+      transform-origin: bottom left;
 
+      z-index: 1;       /* nằm dưới nội dung nếu cần */
+      pointer-events: none; /* không cản click/scroll */
+      opacity: 0.95;
+      filter: drop-shadow(0 0 10px rgba(255,102,255,0.25));
+    }
+
+    /* group textarea + hint + button lại để canh đều */
+    #feedback1-popup .fb1-form{
+      width: 92%;
+      margin: 12px auto 0;         /* form nằm giữa popup */
+
+      padding-left: var(--sticker-gap);  /* chừa chỗ sticker ở trái */
+      box-sizing: border-box;
+
+      display: flex;
+      flex-direction: column;
+      gap: 12px;                   /* cách đều nhau */
+      align-items: stretch;         /* con = full width theo form */
+    }
+
+    /* textarea full width theo form */
+    #feedback1-popup #feedback1-input{
+      width: 100%;
+      margin: 0;
+      display: block;
+    }
+
+    /* dòng hướng dẫn canh giữa đúng theo khung */
+    #feedback1-popup .fb1-hint{
+      width: 100%;
+      margin: 0;
+      text-align: center;     /* CANH GIỮA */
+      color:#fff;
+      opacity:0.8;
+      font-size:0.95em;
+    }
+
+    /* nút gửi full width theo form */
+    #feedback1-popup #feedback1-ok{
+      width: 100%;
+      margin: 10;
+    }
+
+    /* Sticker 2 bên cho popup feedback2 */
+    #feedback2-popup .fb2-panel{
+      position: relative;     /* để sticker absolute bám theo panel */
+      overflow: visible;      /* cho phép sticker lòi ra ngoài */
+    }
+
+    #feedback2-popup .fb2-sticker{
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 120px;           /* chỉnh size tuỳ m */
+      height: auto;
+      z-index: 1;
+      pointer-events: none;
+      filter: drop-shadow(0 0 10px rgba(255,102,255,0.25));
+      opacity: 0.95;
+    }
+
+    /* trái */
+    #feedback2-popup .fb2-sticker.left{
+      left: -40px;            /* âm để lòi ra ngoài panel */
+    }
+
+    /* phải */
+    #feedback2-popup .fb2-sticker.right{
+      right: -40px;
+    }
+
+    /* Responsive cho màn hình nhỏ */
+    @media (max-width: 480px){
+      #feedback2-popup .fb2-sticker{
+        width: 90px;
+      }
+      #feedback2-popup .fb2-sticker.left{ left: -40px; }
+      #feedback2-popup .fb2-sticker.right{ right: -40px; }
+    }
 
   </style>
 </head>
@@ -265,6 +356,7 @@
     </div>
   </div>
 </div>
+
 <!-- 💬 Feedback popup 1 -->
 <div id="feedback1-popup" style="
   position: fixed; inset: 0;
@@ -282,7 +374,10 @@
     box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
     text-align: center;
     font-family: 'Quicksand', sans-serif;
+    position: relative;
+    overflow: visible;
   ">
+  <img class="feedback1-sticker" src="static/un_like.png" alt="sticker" />
     <div style="display:flex; justify-content: space-between; align-items:flex-start;">
       <div style="font-size: 1.05em; color:#ffb3ff; text-align:left; line-height:1.4;">
         hehe lần đầu làm web nên k bt design xịn xò<br>
@@ -294,37 +389,36 @@
       ">✖</button>
     </div>
 
-    <textarea id="feedback1-input" rows="4" placeholder="gõ gì đó rồi nhấn Enter..."
-      style="
-        width: 92%;
-        margin-top: 12px;
-        font-size: 1.05em;
-        padding: 10px 12px;
-        border-radius: 10px;
-        border: 1px solid rgba(255,255,255,0.25);
-        outline: none;
-        resize: none;
-      "></textarea>
+    <div class="fb1-form">
+      <textarea id="feedback1-input" rows="4" placeholder="gõ gì đó rồi nhấn Enter..."
+        style="
+          font-size: 1.05em;
+          padding: 10px 12px;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.25);
+          outline: none;
+          resize: none;
+        "></textarea>
 
-    <div style="margin-top: 10px; color:#fff; opacity:0.8; font-size:0.95em;">
-      (Enter để gửi • Shift+Enter để xuống dòng)
-    </div>
-    <div style="margin-top: 14px;">
+      <div class="fb1-hint">
+          (Enter để gửi • Shift+Enter để xuống dòng)
+      </div>
+
       <button id="feedback1-ok" style="
         font-size: 1.05em;
-        padding: 10px 18px;
         border: none;
         border-radius: 10px;
         cursor: pointer;
         background-color: #ff66cc;
         color: white;
         box-shadow: 0 0 15px #ff99ff;
+        padding: 10px 18px;
       ">Gửi cho pt</button>
     </div>
   </div>
 </div>
 
-<!-- 😭 No-server popup 2 -->
+<!-- No-server popup 2 -->
 <div id="feedback2-popup" style="
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.55);
@@ -332,7 +426,7 @@
   align-items: center; justify-content: center;
   z-index: 5800;
 ">
-  <div style="
+  <div class="fb2-panel" style="
     width: min(520px, 92vw);
     background: rgba(0,0,0,0.78);
     border: 1px solid rgba(255,255,255,0.15);
@@ -342,6 +436,10 @@
     text-align: center;
     font-family: 'Quicksand', sans-serif;
   ">
+    <!-- 2 sticker hai bên -->
+    <img class="fb2-sticker left"  src="static/un_om_cho.png" alt="sticker left">
+    <img class="fb2-sticker right" src="static/un_khoe_qua.png" alt="sticker right">
+
     <div style="font-size: 1.05em; color:#ffb3ff; line-height:1.5; margin-bottom: 12px;">
       dỡn thôi chứ t đ có server để coi lại đâu kkk,<br>
       muốn nói gì thì ig: <b>phutrungdeptraidangcapvcl</b>
@@ -381,8 +479,8 @@
     <div style="display:flex; justify-content: space-between; align-items:center;">
       <div style="font-size: 1.05em; color:#ffb3ff;">
         <b><span style="text-decoration: underline;">btw nếu m k để ý thì nhìn tên tab đi</span></b><br>
-        nếu lỡ mở nhiều tab quá thì <B>ĐÓNG BỚT ĐI</B> <br>
-        hoặc <b>CHỈ CON CHUỘT VÀO dmm</b>
+        nếu lỡ mở nhiều tab quá thì đóng bớt đi <br>
+        hoặc chỉ chuột vào nhe🫰🏻
       </div>
       <button id="feedback3-close" aria-label="Close" style="
         background: transparent; border: none; color:#ff66a3;
@@ -391,6 +489,115 @@
     </div>
   </div>
 </div>
+
+<!-- 🎵 Remix quiz popup 4 -->
+<div id="remix-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 6000;
+">
+  <div style="
+    width: min(520px, 92vw);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    position: relative;
+  ">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+      <div style="font-size: 1.05em; color:#ffb3ff; text-align:left; line-height:1.5;">
+        ê mà cái bài remix mà bữa m bảo t<br>
+        m thích nhất tên gì ấy nhề<br>
+      </div>
+
+      <button id="remix-close" aria-label="Close" style="
+        background: transparent; border: none; color:#ff66a3;
+        font-size: 1.2em; cursor: pointer;
+      ">✖</button>
+    </div>
+
+    <input id="remix-input" placeholder="gõ dô đây nè..."
+      style="
+        width: 92%;
+        margin-top: 14px;
+        font-size: 1.05em;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.25);
+        outline: none;
+        text-align: center;
+      " />
+
+    <div id="remix-error" style="margin-top:10px; color:#ff8fb3; display:none;">
+      ? bữa m nói t đổi tình đổi áo mà
+    </div>
+
+    <div style="margin-top: 14px;">
+      <button id="remix-submit">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- 🎬 Video overlay -->
+<div id="video-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 6100;
+">
+  <div style="
+    width: min(900px, 92vw);
+    max-height: 85vh;
+    position: relative;
+  ">
+    <video id="cc-video" src="static/cc.mp4"
+      style="
+        width: 100%;
+        max-height: 85vh;
+        border-radius: 16px;
+        box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+        background: #000;
+      "
+      playsinline
+      controls
+    ></video>
+  </div>
+</div>
+
+<!-- Final popup -->
+<div id="final-popup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 6200;
+">
+  <div style="
+    width: min(520px, 92vw);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 0 24px rgba(255, 102, 255, 0.25);
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+  ">
+    <div style="font-size: 1.15em; color:#ffb3ff; line-height:1.6;">
+      hết rui do, snvv nghen
+    </div>
+
+    <div style="margin-top: 14px;">
+      <button id="final-home">về main menu</button>
+    </div>
+  </div>
+</div>
+
 
 
   <h1>ê ủn biết nay ngày gì kh cu?</h1>
@@ -515,7 +722,7 @@ function showFeedback3() {
 
 function hideFeedback3() {
   fb3Popup.style.display = "none";
-  // ✅ quay về menu chính
+  // quay về menu chính
   menu.style.display = "block";
   messageBox.style.display = "none";
 }
@@ -545,9 +752,97 @@ fb2Ok.addEventListener("click", () => {
   showFeedback3();
 }); 
 
-fb3Close.addEventListener("click", () => {
-  hideFeedback3();
+const remixPopup  = document.getElementById("remix-popup");
+const remixInput  = document.getElementById("remix-input");
+const remixSubmit = document.getElementById("remix-submit");
+const remixClose  = document.getElementById("remix-close");
+const remixError  = document.getElementById("remix-error");
+
+const videoPopup  = document.getElementById("video-popup");
+const ccVideo     = document.getElementById("cc-video");
+
+const finalPopup  = document.getElementById("final-popup");
+const finalHome   = document.getElementById("final-home");
+
+function showRemixPopup() {
+  remixPopup.style.display = "flex";
+  remixError.style.display = "none";
+  remixInput.value = "";
+  setTimeout(() => remixInput.focus(), 0);
+}
+function hideRemixPopup() {
+  remixPopup.style.display = "none";
+}
+
+function showVideo() {
+  stopAll();
+  videoPopup.style.display = "flex";
+  // đảm bảo video về đầu & play
+  ccVideo.currentTime = 0;
+  const p = ccVideo.play();
+  if (p && typeof p.catch === "function") p.catch(()=>{});
+}
+
+function hideVideo() {
+  ccVideo.pause();
+  videoPopup.style.display = "none";
+}
+
+function showFinalPopup() {
+  finalPopup.style.display = "flex";
+}
+function hideFinalPopup() {
+  finalPopup.style.display = "none";
+}
+
+function submitRemix() {
+  const raw = remixInput.value || "";
+  const v = normaliseText(raw); // m đã có normaliseText ở trên rồi
+
+  const answers = [
+    "doi tinh doi ao",
+    "doi tinh doi ao remix"
+  ];
+
+  if (answers.includes(v)) {
+    hideRemixPopup();
+    showVideo();
+  } else {
+    remixError.style.display = "block";
+    remixInput.focus();
+    remixInput.select();
+  }
+}
+
+remixSubmit.addEventListener("click", submitRemix);
+remixInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") submitRemix();
 });
+
+remixClose.addEventListener("click", () => {
+  // nếu m muốn bấm X thì về main menu luôn:
+  hideRemixPopup();
+  menu.style.display = "block";
+});
+
+// Video play xong -> panel cuối
+ccVideo.addEventListener("ended", () => {
+  hideVideo();
+  showFinalPopup();
+});
+
+// Nút về main menu
+finalHome.addEventListener("click", () => {
+  hideFinalPopup();
+  menu.style.display = "block";
+});
+
+// override hành vi close feedback3: không về main menu nữa, mà đi sang remix popup
+fb3Close.addEventListener("click", () => {
+  fb3Popup.style.display = "none"; // hideFeedback3() cũ có bật menu lại, nên né nó
+  showRemixPopup();
+});
+
 
 
   // Khi bấm "Có" → Hiện bức thư
@@ -569,7 +864,7 @@ fb3Close.addEventListener("click", () => {
     `;
     document.body.appendChild(letterBox);
 
-        // 🩷 Heo nổ tung liên tục từ mép bức thư
+        // Heo nổ tung liên tục từ mép bức thư
         function spawnHeartPigs() {
           const pigs = ["static/cute-pig.webp", "static/love-squeeze.webp"];
           const letter = document.getElementById("letter");
@@ -623,7 +918,7 @@ fb3Close.addEventListener("click", () => {
         }
         const burstInterval = setInterval(spawnHeartPigs, 800); // cứ 0.8s nổ 1 đợt
 
-    // 🐷 Hiện heo ở góc phải khi mở thư
+    // Hiện heo ở góc phải khi mở thư
     const cornerPig = document.createElement("img");
     cornerPig.src = "static/unlaclu.webp"; // hoặc chỉnh đường dẫn nếu khác
     cornerPig.id = "corner-pig";
@@ -849,7 +1144,7 @@ yesBtn.addEventListener("click", () => {
   });
 </script>
 <script>
-  // 🐷 Hàm tạo con heo chạy ngang
+  // Hàm tạo con heo chạy ngang
   function spawnRunningPig(forceAtTitle = false) {
     const pig = document.createElement("img");
     pig.src = "static/runningPig.gif";
