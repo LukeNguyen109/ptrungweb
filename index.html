@@ -1106,11 +1106,16 @@ function normaliseDate(s) {
   const mm = String(parseInt(m[2], 10)).padStart(2, "0");
   return `${dd}/${mm}`;
 }
+
 function normaliseText(s) {
   return (s || "")
     .toLowerCase()
-    .normalize("NFD")                 // tách dấu
-    .replace(/[\u0300-\u036f]/g, "")  // xoá dấu
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/\u00A0/g, " ")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
