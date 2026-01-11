@@ -230,6 +230,30 @@
       #feedback2-popup .fb2-sticker.right{ right: -40px; }
     }
 
+    /* PNG ở giữa cạnh trên của final panel */
+    #final-popup .final-panel{
+      position: relative;   /* để ảnh absolute bám theo panel */
+      overflow: visible;    /* cho ảnh lòi ra ngoài panel nếu cần */
+    }
+
+    #final-popup .final-top-sticker{
+      position: absolute;
+      top: 0;               /* neo vào cạnh trên */
+      left: 50%;            /* canh giữa theo trục ngang */
+      transform: translate(-50%, -110%); /* đẩy lên trên cạnh panel */
+      width: 120px;         /* chỉnh size tuỳ ảnh */
+      height: auto;
+      z-index: 2;           /* nằm trên nội dung panel */
+      pointer-events: none; /* không cản click nút */
+      filter: drop-shadow(0 0 10px rgba(255,102,255,0.25));
+      opacity: 0.98;
+    }
+
+    /* responsive nhỏ lại trên mobile */
+    @media (max-width: 480px){
+      #final-popup .final-top-sticker{ width: 110px; }
+    }
+
   </style>
 </head>
 <body>
@@ -578,7 +602,7 @@
   align-items: center; justify-content: center;
   z-index: 6200;
 ">
-  <div style="
+  <div class="final-panel" style="
     width: min(520px, 92vw);
     background: rgba(0,0,0,0.78);
     border: 1px solid rgba(255,255,255,0.15);
@@ -588,6 +612,9 @@
     text-align: center;
     font-family: 'Quicksand', sans-serif;
   ">
+    <!-- PNG ở giữa cạnh trên -->
+    <img class="final-top-sticker" src="static/snvv_nghen.jpg" alt="sticker final">
+
     <div style="font-size: 1.15em; color:#ffb3ff; line-height:1.6;">
       hết rui do, snvv nghen
     </div>
@@ -597,8 +624,6 @@
     </div>
   </div>
 </div>
-
-
 
   <h1>ê ủn biết nay ngày gì kh cu?</h1>
   <div id="menu">
@@ -856,10 +881,11 @@ fb3Close.addEventListener("click", () => {
           <button id="close-letter">✖</button>
           <div class="scrollable">
             <h3>Happy birthday ủn nho 🎂</h3>
-            <p>Hôm nay là một ngày thật đặc biệt — ngày mà thế giới trở nên tươi sáng hơn một chút, vì có bạn trong đó.</p>
-            <p>Chúc bạn có một sinh nhật tràn đầy niềm vui, tiếng cười và hạnh phúc. Cảm ơn bạn vì đã luôn là chính mình — ấm áp, đáng yêu và chân thành.</p>
-            <p>Mong rằng mỗi ngày trôi qua đều mang đến cho bạn những điều tuyệt vời, những kỷ niệm đáng nhớ và nụ cười thật tươi.</p>
-            <p>Thêm một tuổi mới thật rực rỡ nhé! 💗              keke</p>
+            <p>HAPPY BIRTHDAY 生日快乐. của ít lòng vòng vậy ha an ủi cái tinh thần bro ng hanoi chẩt.</p>
+            <p>thấy câu này quen không=)) ban đầu tính ra hnoi đúng snhat ông đó nhma kco kịp để hoàn thành cái intern dm.</p>
+            <p>thôi thì ông nhận đỡ cnay đi ha rồi tui ra hnoi mình quẩy sau.</p>
+            <p>chúc ông 8386 chúc ông tất cả nhưng không dám chúc học tốt:) lý do thì bt r do...</p>
+            <p>z đi ha CHÚC MỪNG SINH NHẬT💔❤️‍🩹❤️🫀</p>
           </div>
         </div>
       </div>
