@@ -823,6 +823,7 @@ remixClose.addEventListener("click", () => {
   // nếu m muốn bấm X thì về main menu luôn:
   hideRemixPopup();
   menu.style.display = "block";
+  play1();
 });
 
 // Video play xong -> panel cuối
@@ -835,6 +836,7 @@ ccVideo.addEventListener("ended", () => {
 finalHome.addEventListener("click", () => {
   hideFinalPopup();
   menu.style.display = "block";
+  play1();
 });
 
 // override hành vi close feedback3: không về main menu nữa, mà đi sang remix popup
