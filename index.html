@@ -645,7 +645,6 @@
   const messageBox = document.getElementById("message-box");
   const fb1Ok = document.getElementById("feedback1-ok");
 
-  
   // =======================
   // AUDIO SETUP
   // =======================
@@ -870,8 +869,6 @@ fb3Close.addEventListener("click", () => {
   showRemixPopup();
 });
 
-
-
   // Khi bấm "Có" → Hiện bức thư
   function openLetter() {
     const letterBox = document.createElement("div");
@@ -881,7 +878,7 @@ fb3Close.addEventListener("click", () => {
           <button id="close-letter">✖</button>
           <div class="scrollable">
             <h3>Happy birthday ủn nho 🎂</h3>
-            <p>HAPPY BIRTHDAY 生日快乐. của ít lòng vòng vậy ha an ủi cái tinh thần bro ng hanoi chẩt.</p>
+            <p>HAPPY BIRTHDAY 生日快乐. của ít lòng vòng vậy ha an ủi cái tinh thần bro ng hanoi chất.</p>
             <p>thấy câu này quen không=)) ban đầu tính ra hnoi đúng snhat ông đó nhma kco kịp để hoàn thành cái intern dm.</p>
             <p>thôi thì ông nhận đỡ cnay đi ha rồi tui ra hnoi mình quẩy sau.</p>
             <p>chúc ông 8386 chúc ông tất cả nhưng không dám chúc học tốt:) lý do thì bt r do...</p>
@@ -951,7 +948,6 @@ fb3Close.addEventListener("click", () => {
     cornerPig.src = "static/unlaclu.webp"; // hoặc chỉnh đường dẫn nếu khác
     cornerPig.id = "corner-pig";
     letterBox.querySelector("#letter").appendChild(cornerPig);
-
 
     // CSS popup
     if (!document.getElementById("letter-style")) {
@@ -1059,6 +1055,7 @@ fb3Close.addEventListener("click", () => {
       showFeedback1();
     });
 }
+
 const datePopup = document.getElementById("date-popup");
 const dateInput = document.getElementById("date-input");
 const dateSubmit = document.getElementById("date-submit");
@@ -1126,7 +1123,10 @@ function submitDate() {
     "sn tao",
     "sn un",
     "sinh nhat un",
-    "sinh nhat bo"
+    "sinh nhat bo",
+    "sn t",
+    "sinh nhat tao",
+    "sn tao"
   ];
 
   const raw = dateInput.value;
@@ -1208,7 +1208,5 @@ yesBtn.addEventListener("click", () => {
     setInterval(spawnRunningPig, 6000); // sau đó mỗi 6 giây
   });
 </script>
-
-
 </body>
 </html>
